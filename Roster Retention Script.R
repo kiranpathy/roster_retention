@@ -43,5 +43,5 @@ summary(model2)
 model3 <- glm(family = binomial, `2025_status` ~ age + `2025_contract_status` + wrc_plus + total_drs, data = hitters_2024)
 summary(model3)
 
-model4 <- glm(family = binomial, `2025_status` ~ age + `2025_contract_status` + wrc_plus + total_drs + pa + primary_pos, data = hitters_2024)
+model4 <- glm(family = binomial, `2025_status` ~ age + `2025_contract_status` + wrc_plus + total_drs + pa + pos_group, data = hitters_2024)
 summary(model4)
