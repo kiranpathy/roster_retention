@@ -32,6 +32,36 @@ hitters_2024 <- hitters_2024 %>%
     .default = primary_pos
   ))
 
+#Look at some data
+no_mlb_2025 <- hitters_2024 %>%
+  filter(`2025_status`== 0)
+no_mlb_2025
+
+mlb_2025 <- hitters_2024 %>%
+  filter(`2025_status`== 1)
+mlb_2025
+
+mlb_2025 %>%
+  filter(wrc_plus < 100)
+
+no_mlb_2025 %>%
+  summarise(median_age = median(age),
+            median_wrc_plus = median(wrc_plus),
+            median_drs = median(total_drs),
+            median_pa = median(pa))
+
+mlb_2025 %>%
+  summarise(median_age = median(age),
+            median_wrc_plus = median(wrc_plus),
+            median_drs = median(total_drs),
+            median_pa = median(pa))
+
+table(no_mlb_2025$pos_group)
+table(mlb_2025$pos_group)
+
+table(no_mlb_2025$`2025_contract_status`)
+table(mlb_2025$`2025_contract_status`)
+
 #Models
 
 model_offense <- glm(family = binomial, `2025_status` ~ wrc_plus, data = hitters_2024)
