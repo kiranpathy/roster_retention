@@ -103,6 +103,17 @@ graph_pa <- hitters_2024 %>%
   )
 graph_pa
 
+graph_age <- hitters_2024 %>%
+  ggplot(aes(x = age, y = `2025_status`)) +
+  geom_point() +
+  geom_smooth(method = "glm", method.args = list(family = "binomial"), color = "green") +
+  labs(
+    x = "Age",
+    y = "Probability of MLB Opening Day Roster Intention in 2025",
+    title = "Age Predicting Roster Retention"
+  )
+graph_age
+
 
 
 
