@@ -33,6 +33,10 @@ hitters_2024 <- hitters_2024 %>%
   ))
 
 #Look at some data
+table(hitters_2024$`2025_status`)
+table(hitters_2024$pos_group)
+table(hitters_2024$`2025_contract_status`)
+
 no_mlb_2025 <- hitters_2024 %>%
   filter(`2025_status`== 0)
 no_mlb_2025
@@ -42,7 +46,8 @@ mlb_2025 <- hitters_2024 %>%
 mlb_2025
 
 mlb_2025 %>%
-  filter(wrc_plus < 100)
+  filter(wrc_plus < 100 & pa > 502) %>%
+  arrange(desc(pa))
 
 no_mlb_2025 %>%
   summarise(median_age = median(age),
@@ -64,27 +69,21 @@ table(mlb_2025$`2025_contract_status`)
 
 #Models
 
-model_offense <- glm(family = binomial, `2025_status` ~ wrc_plus, data = hitters_2024)
-summary(model_offense)
-
-model_usage <- glm(family = binomial, `2025_status` ~ pa, data = hitters_2024)
-summary(model_usage)
-
 model_performance <- glm(family = binomial, `2025_status` ~ wrc_plus + total_drs + pa, data = hitters_2024)
 summary(model_performance)
 
-model_demographic <- glm(family = binomial, `2025_status` ~ age + `2025_contract_status`, data = hitters_2024)
+model_demographic <- glm(family = binomial, `2025_status` ~ age + `2025_contract_status` + pos_group, data = hitters_2024)
 summary(model_demographic)
 
-model_offense2 <- glm(family = binomial, `2025_status` ~ wrc_plus * pa, data = hitters_2024)
-summary(model_offense2)
+model_all <- glm(family = binomial, `2025_status` ~ wrc_plus + total_drs + pa + age + `2025_contract_status` + pos_group, data = hitters_2024)
+summary(model_all)
 
 #Graph
 
 graph_wrc <- hitters_2024 %>%
   ggplot(aes(x = wrc_plus, y = `2025_status`)) +
   geom_point() +
-  geom_smooth(method = "glm", method.args = list(family = "binomial")) +
+  geom_smooth(method = "glm", method.args = list(family = "binomial"), se = F) +
   labs(
     x = "wRC+ (2024)",
     y = "Probability of MLB Opening Day Roster Intention in 2025",
@@ -95,7 +94,7 @@ graph_wrc
 graph_pa <- hitters_2024 %>%
   ggplot(aes(x = pa, y = `2025_status`)) +
   geom_point() +
-  geom_smooth(method = "glm", method.args = list(family = "binomial"), color = "red") +
+  geom_smooth(method = "glm", method.args = list(family = "binomial"), color = "red", se = F) +
   labs(
     x = "PA (2024)",
     y = "Probability of MLB Opening Day Roster Intention in 2025",
@@ -106,14 +105,10 @@ graph_pa
 graph_age <- hitters_2024 %>%
   ggplot(aes(x = age, y = `2025_status`)) +
   geom_point() +
-  geom_smooth(method = "glm", method.args = list(family = "binomial"), color = "green") +
+  geom_smooth(method = "glm", method.args = list(family = "binomial"), color = "green", se = F) +
   labs(
-    x = "Age",
+    x = "Age (on June 30, 2024)",
     y = "Probability of MLB Opening Day Roster Intention in 2025",
     title = "Age Predicting Roster Retention"
   )
 graph_age
-
-
-
-
